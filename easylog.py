@@ -9,7 +9,7 @@ patterns = [
     {'regex': re.compile(r'.*Assertion failure.*'), 'tags': ['error']},
     {'regex': re.compile(r'.*WARNING.*'), 'tags': ['warn']},
     {'regex': re.compile(r'.*received signal 11.*'), 'tags': ['important']},
-    {'regex': re.compile(r'.*Assertion failure.*'), 'tags': ['important','error']},
+    {'regex': re.compile(r'.*Assertion failure.*'), 'tags': ['important', 'error']},
 ]
 
 def too_many_times(line, lines):
@@ -35,6 +35,7 @@ def main():
     # print(json)
     sys.stdout.write(json)
 
+
 def process_lines(lines, patterns):
     output = []
     for line in lines:
@@ -45,7 +46,7 @@ def process_lines(lines, patterns):
         for rule in smart_rules:
             if rule['filter'](line, lines):
                 line_tags.extend(rule['tags'])
-        output.append({'line': line, 'tags':line_tags})
+        output.append({'line': line, 'tags': line_tags})
 
     return json.dumps(output)
 
