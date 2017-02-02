@@ -12,6 +12,15 @@ patterns = [
     {'regex': re.compile(r'.*Assertion failure.*'), 'tags': ['important','error']},
 ]
 
+def too_many_times(line, lines):
+    # This is very slow to repeat every time, but we keep it like this for
+    # simplicity of the smart_rules list
+    return lines.count(line) > 10
+
+smart_rules = [
+    {'filter': too_many_times, 'tags': ['frequent']},
+]
+
 def main():
     parser = argparse.ArgumentParser(description='Convert raw log to JSON format with tags')
     parser.add_argument('filename', type=argparse.FileType("r"),
@@ -33,6 +42,9 @@ def process_lines(lines, patterns):
         for pattern in patterns:
             if pattern['regex'].match(line):
                 line_tags.extend(pattern['tags'])
+        for rule in smart_rules:
+            if rule['filter'](line, lines):
+                line_tags.extend(rule['tags'])
         output.append({'line': line, 'tags':line_tags})
 
     return json.dumps(output)

@@ -16,17 +16,20 @@ def main():
 
     lines = json.loads(json_str)
     for line in lines:
+        attrs = []
+        if 'frequent' in line['tags']:
+            attrs.append('dark')
         if 'important' in line['tags']:
-            print(colored(line['line'], 'white', 'on_red')),
+            print(colored(line['line'], 'white', 'on_red', attrs=attrs)),
             continue
         if 'error' in line['tags']:
-            print(colored(line['line'], 'red')),
+            print(colored(line['line'], 'red', attrs=attrs)),
             continue
         if 'warn' in line['tags']:
-            print(colored(line['line'], 'yellow')),
+            print(colored(line['line'], 'yellow', attrs=attrs)),
             continue
         else:
-            print(colored(line['line'], attrs=['dark'])),
+            print(colored(line['line'], attrs=attrs)),
 
 if __name__ == '__main__':
     main()
