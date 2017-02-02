@@ -1,9 +1,8 @@
 import argparse
 import fileinput
 import json
-from colorama import Fore, Back, Style, init
+from termcolor import colored
 import sys
-init(autoreset=True) # colorama
 
 def main():
     parser = argparse.ArgumentParser(description='Print easylog JSON file')
@@ -18,21 +17,16 @@ def main():
     lines = json.loads(json_str)
     for line in lines:
         if 'important' in line['tags']:
-            # print(colored(line['line'], 'red'))
-            sys.stdout.write(Back.RED + Fore.WHITE + line['line']),
+            print(colored(line['line'], 'white', 'on_red')),
             continue
         if 'error' in line['tags']:
-            # print(colored(line['line'], 'red'))
-            print(Fore.RED + line['line']),
+            print(colored(line['line'], 'red')),
             continue
         if 'warn' in line['tags']:
-            # print(colored(line['line'], 'red'))
-            print(Fore.YELLOW+ line['line']),
+            print(colored(line['line'], 'yellow')),
             continue
         else:
-            print(Style.DIM + line['line']),
-
-
+            print(colored(line['line'], attrs=['dark'])),
 
 if __name__ == '__main__':
     main()

@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+tmpfile="/tmp/easylog_tmp.json"
+python easylog.py lnav.log > ${tmpfile} && python viewer.py ${tmpfile} | less -R     
+
