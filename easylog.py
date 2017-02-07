@@ -5,11 +5,10 @@ import sys
 
 # TODO: read the patterns from config file
 patterns = [
-    {'regex': re.compile(r'.*ERROR.*'), 'tags': ['error']},
-    {'regex': re.compile(r'.*Assertion failure.*'), 'tags': ['error']},
-    {'regex': re.compile(r'.*WARNING.*'), 'tags': ['warn']},
+    {'regex': re.compile(r'.*ERROR.*', re.IGNORECASE), 'tags': ['error']},
+    {'regex': re.compile(r'.*WARNING.*', re.IGNORECASE), 'tags': ['warn']},
     {'regex': re.compile(r'.*received signal 11.*'), 'tags': ['important']},
-    {'regex': re.compile(r'.*Assertion failure.*'), 'tags': ['important', 'error']},
+    {'regex': re.compile(r'.*ASSERTION.*', re.IGNORECASE), 'tags': ['important','error']},
 ]
 
 def too_many_times(line, lines):
@@ -18,7 +17,7 @@ def too_many_times(line, lines):
     return lines.count(line) > 10
 
 smart_rules = [
-    {'filter': too_many_times, 'tags': ['frequent']},
+    # {'filter': too_many_times, 'tags': ['frequent']},
 ]
 
 def main():
