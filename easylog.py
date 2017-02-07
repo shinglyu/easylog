@@ -45,7 +45,7 @@ def process_lines(lines, patterns):
         for rule in smart_rules:
             if rule['filter'](line, lines):
                 line_tags.extend(rule['tags'])
-        output.append({'line': line, 'tags': line_tags})
+        output.append({'line': line.rstrip(), 'tags': line_tags}) # Trim newline
 
     return json.dumps(output)
 
