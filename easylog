@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 tmpfile="/tmp/easylog_tmp.json"
-python easylog.py lnav.log > ${tmpfile} && python viewer.py ${tmpfile} | less -R     
+
+source ${DIR}/venv/bin/activate
+python ${DIR}/easylog.py ${1} > ${tmpfile} && python ${DIR}/viewer.py ${tmpfile} | less -R     
+deactivate
 
