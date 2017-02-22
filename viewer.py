@@ -32,6 +32,11 @@ def main():
         attrs = []
         if 'frequent' in line['tags']:
             attrs.append('dark')
+        if 'too-long' in line['tags']:
+            print(colored(line['line'][:600] +
+                          "...({0} columns omitted)".format(len(line['line'][600:])),
+                          attrs=attrs))
+            continue
         if 'important' in line['tags']:
             print(colored(line['line'], 'white', 'on_red', attrs=attrs))
             continue
@@ -40,6 +45,12 @@ def main():
             continue
         if 'warn' in line['tags']:
             print(colored(line['line'], 'yellow', attrs=attrs))
+            continue
+        if 'bt-line' in line['tags']:
+            print(colored(line['line'], 'green', attrs=attrs))
+            continue
+        if 'casename' in line['tags']:
+            print(colored(line['line'], 'green', attrs=attrs))
             continue
         else:
             print(colored(line['line'], attrs=attrs))
