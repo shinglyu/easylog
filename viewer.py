@@ -20,6 +20,7 @@ def main():
     repeat_count = 0
 
     for line in lines:
+        # Hide the repeated lines
         if line == prev_line:
             repeat_count += 1
             continue # Skip printing
@@ -29,6 +30,31 @@ def main():
             repeat_count = 0
             prev_line = line
 
+        # Handling lines with segments
+        if 'segments' in line:
+            for segment in line['segments']:
+                # Use sys.stdout.write to supress space added by print
+                # Consider using print('foo', end='') from python 3
+                if 'bt_id' in segment['tags']:
+                    sys.stdout.write(colored(segment['text'], 'blue', attrs=[]))
+                    continue
+                if 'address' in segment['tags']:
+                    sys.stdout.write(colored(segment['text'], 'white', attrs=['dark']))
+                    continue
+                if 'func' in segment['tags']:
+                    sys.stdout.write(colored(segment['text'], 'yellow', attrs=[]))
+                    continue
+                if 'func_args' in segment['tags']:
+                    sys.stdout.write(colored(segment['text'], 'green', attrs=['dark']))
+                    continue
+                if 'filename' in segment['tags']:
+                    sys.stdout.write(colored(segment['text'], 'cyan', attrs=['dark']))
+                    continue
+                sys.stdout.write(segment['text']),
+            print("")  # new line
+            continue
+
+        # Handling full lines
         attrs = []
         if 'frequent' in line['tags']:
             attrs.append('dark')

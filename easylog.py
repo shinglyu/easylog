@@ -33,6 +33,29 @@ smart_rules = [
     {'filter': line_too_long, 'tags': ['too-long']},
 ]
 
+segment_rules = [
+    {'regex': re.compile(r"(#[0-9]*)(.*)( in )([^\)]*)(\(.*\))( at )(.*)", re.IGNORECASE), 'tags': {
+        0: ['bt_id'],
+        1: ['address'],
+        2: [],  # in
+        3: ['func'],
+        4: ['func_args'],
+        5: [],  # at
+        6: ['filename']
+    }},
+    {'regex': re.compile(r"(#[0-9]*)(.*)( in )([^\)]*)(\(.*\))", re.IGNORECASE), 'tags': {
+        0: ['bt_id'],
+        1: ['address'],
+        2: [],  # in
+        3: ['func'],
+        4: ['func_args'],
+    }},
+    {'regex': re.compile(r"(\s*at )(.*)", re.IGNORECASE), 'tags': {
+        0: [],  # at
+        1: ['filename']
+    }},
+]
+
 def main():
     parser = argparse.ArgumentParser(description='Convert raw log to JSON format with tags')
     parser.add_argument('filename', type=argparse.FileType("r"),
@@ -43,23 +66,40 @@ def main():
     lines = args.filename.readlines()
     args.filename.close()
 
-    json = process_lines(lines, patterns)
+    #            don't need this vvvvvv
+    processed_lines = process_lines(lines, patterns)
     # print(json)
-    sys.stdout.write(json)
+    sys.stdout.write(json.dumps(processed_lines))
 
+# FIXME: pass the patternn and rules through arguments
 def process_lines(lines, patterns):
     output = []
     for line in lines:
         line_tags = []
+        segments = []
         for pattern in patterns:
             if pattern['regex'].match(line):
                 line_tags.extend(pattern['tags'])
         for rule in smart_rules:
             if rule['filter'](line, lines):
                 line_tags.extend(rule['tags'])
-        output.append({'line': line.rstrip(), 'tags': line_tags}) # Trim newline
+        for rule in segment_rules:
+            # Only match the first fit
+            matches = rule['regex'].findall(line)
+            if matches and len(matches[0]) > 0:
+                for idx, segment in enumerate(matches[0]):
+                    segments.append({'text': segment, 'tags': rule['tags'][idx]})
+                break
 
-    return json.dumps(output)
+        if segments:
+            output.append({'line': line.rstrip(),
+                           'tags': line_tags,
+                           'segments': segments}) # Trim newline
+        else:
+            output.append({'line': line.rstrip(),
+                           'tags': line_tags})
+
+    return output
 
 if __name__ == '__main__':
     main()
