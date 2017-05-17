@@ -1,5 +1,7 @@
 import re
 import easylog
+
+
 def test_segments():
     segment_rules = [
         {'regex': re.compile(r"(#[0-9]*)(.*)( in )([^\)]*)(\(.*\))( at )(.*)", re.IGNORECASE), 'tags': {
