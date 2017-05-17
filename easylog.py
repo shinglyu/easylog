@@ -6,25 +6,28 @@ import sys
 # TODO: read the patterns from config file
 patterns = [
     {'regex': re.compile(r'.*ERROR.*', re.IGNORECASE), 'tags': ['error']},
-    {'regex': re.compile(r'.*FAIL .*', re.IGNORECASE), 'tags': ['error']}, # Space after to avoid matching "failures"
+    {'regex': re.compile(r'.*FAIL .*', re.IGNORECASE), 'tags': ['error']},  # Space after to avoid matching "failures"
     {'regex': re.compile(r'.*WARNING.*', re.IGNORECASE), 'tags': ['warn']},
     {'regex': re.compile(r'.*received signal 11.*'), 'tags': ['important']},
-    {'regex': re.compile(r'.*ASSERTION.*', re.IGNORECASE), 'tags': ['important','error']},
-    {'regex': re.compile(r'^#[0-9]*', re.IGNORECASE), 'tags': ['bt-line']}, # Backtraces
-# Reftest
+    {'regex': re.compile(r'.*ASSERTION.*', re.IGNORECASE), 'tags': ['important', 'error']},
+    {'regex': re.compile(r'^#[0-9]*', re.IGNORECASE), 'tags': ['bt-line']},  # Backtraces
+    # Reftest
     {'regex': re.compile(r'^REFTEST TEST-LOAD', re.IGNORECASE), 'tags': ['casename']},
     {'regex': re.compile(r'TEST-UNEXPECTED-FAIL', re.IGNORECASE), 'tags': ['error']},
     {'regex': re.compile(r'^REFTEST PROCESS-CRASH', re.IGNORECASE), 'tags': ['error']},
     {'regex': re.compile(r'^REFTEST TEST-END', re.IGNORECASE), 'tags': ['casename']},
-# Mochitest
+    # Mochitest
     {'regex': re.compile(r'.* TEST-OK .*', re.IGNORECASE), 'tags': ['pass']},
     {'regex': re.compile(r'.* TEST-PASS .*', re.IGNORECASE), 'tags': ['pass']},
 ]
 
+
+# Smart rules
 def too_many_times(line, lines):
     # This is very slow to repeat every time, but we keep it like this for
     # simplicity of the smart_rules list
     return lines.count(line) > 10
+
 
 def line_too_long(line, lines):
     # This is very slow to repeat every time, but we keep it like this for
@@ -59,6 +62,7 @@ segment_rules = [
     }},
 ]
 
+
 def main():
     parser = argparse.ArgumentParser(description='Convert raw log to JSON format with tags')
     parser.add_argument('filename', type=argparse.FileType("r"),
@@ -69,12 +73,12 @@ def main():
     lines = args.filename.readlines()
     args.filename.close()
 
-    #            don't need this vvvvvv
     processed_lines = process_lines(lines, patterns)
     # print(json)
     sys.stdout.write(json.dumps(processed_lines))
 
-# FIXME: pass the patternn and rules through arguments
+
+# FIXME: pass the patterns and rules through arguments
 def process_lines(lines, patterns):
     output = []
     for line in lines:
@@ -97,7 +101,7 @@ def process_lines(lines, patterns):
         if segments:
             output.append({'line': line.rstrip(),
                            'tags': line_tags,
-                           'segments': segments}) # Trim newline
+                           'segments': segments})  # Trim newline
         else:
             output.append({'line': line.rstrip(),
                            'tags': line_tags})

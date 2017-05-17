@@ -1,8 +1,8 @@
 import argparse
-import fileinput
 import json
 from termcolor import colored
 import sys
+
 
 def main():
     parser = argparse.ArgumentParser(description='Print easylog JSON file')
@@ -20,10 +20,15 @@ def main():
     repeat_count = 0
 
     for line in lines:
+
         # Hide the repeated lines
+        # I choose to make this an viewer implementation, because I don't want
+        # to change the log file's content after processing
+        # We could extract this as a viewer feature list so viewers can choose
+        # to support them
         if line == prev_line:
             repeat_count += 1
-            continue # Skip printing
+            continue  # Skip printing
         else:
             if repeat_count > 0:
                 print(colored("(Repeats {0} times)".format(repeat_count), attrs=["dark"]))
