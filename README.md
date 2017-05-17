@@ -6,7 +6,7 @@ A log viewer that highlights your log based on regex or smart rules.
 # Install
 
 ```
-pip instal termcolor
+./setup.sh
 ```
 
 # Usage
