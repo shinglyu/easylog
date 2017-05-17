@@ -27,7 +27,7 @@ def main():
         else:
             if repeat_count > 0:
                 print(colored("(Repeats {0} times)".format(repeat_count), attrs=["dark"]))
-            repeat_count = 0
+                repeat_count = 0
             prev_line = line
 
         # Handling lines with segments
@@ -76,6 +76,9 @@ def main():
             print(colored(line['line'], 'green', attrs=attrs))
             continue
         if 'casename' in line['tags']:
+            print(colored(line['line'], 'green', attrs=attrs))
+            continue
+        if 'pass' in line['tags']:
             print(colored(line['line'], 'green', attrs=attrs))
             continue
         else:

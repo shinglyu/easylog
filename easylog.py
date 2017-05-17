@@ -6,16 +6,19 @@ import sys
 # TODO: read the patterns from config file
 patterns = [
     {'regex': re.compile(r'.*ERROR.*', re.IGNORECASE), 'tags': ['error']},
+    {'regex': re.compile(r'.*FAIL .*', re.IGNORECASE), 'tags': ['error']}, # Space after to avoid matching "failures"
     {'regex': re.compile(r'.*WARNING.*', re.IGNORECASE), 'tags': ['warn']},
     {'regex': re.compile(r'.*received signal 11.*'), 'tags': ['important']},
     {'regex': re.compile(r'.*ASSERTION.*', re.IGNORECASE), 'tags': ['important','error']},
-    {'regex': re.compile(r'^#[0-9]*', re.IGNORECASE), 'tags': ['bt-line']},
+    {'regex': re.compile(r'^#[0-9]*', re.IGNORECASE), 'tags': ['bt-line']}, # Backtraces
 # Reftest
     {'regex': re.compile(r'^REFTEST TEST-LOAD', re.IGNORECASE), 'tags': ['casename']},
     {'regex': re.compile(r'TEST-UNEXPECTED-FAIL', re.IGNORECASE), 'tags': ['error']},
     {'regex': re.compile(r'^REFTEST PROCESS-CRASH', re.IGNORECASE), 'tags': ['error']},
     {'regex': re.compile(r'^REFTEST TEST-END', re.IGNORECASE), 'tags': ['casename']},
-
+# Mochitest
+    {'regex': re.compile(r'.* TEST-OK .*', re.IGNORECASE), 'tags': ['pass']},
+    {'regex': re.compile(r'.* TEST-PASS .*', re.IGNORECASE), 'tags': ['pass']},
 ]
 
 def too_many_times(line, lines):
